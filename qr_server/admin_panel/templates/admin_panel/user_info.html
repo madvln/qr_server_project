@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user_info.title }}{% endblock %}
+
+{% block header %}{{ user_info.name }}{% endblock %}
+
+{% block content %}
+  <p>Имя: {{ user_info.name }}</p>
+  <p>QR код: <img src="{{ user_info.qr_qode.url }}" alt="QR код"></p>
+  <!-- Добавьте другие данные о пользователе здесь -->
+{% endblock %}
