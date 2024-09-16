@@ -6,6 +6,10 @@
 
 {% block content %}
   <p>Имя: {{ user_info.name }}</p>
-  <p>QR код: <img src="{{ user_info.qr_qode.url }}" alt="QR код"></p>
+  {% if user.qr_qode and user.qr_code.url %}
+  <p>QR код: <img src="{{ user_info.qr_qode.url }}" alt="QR код"></p>  
+  {% else %}
+  <p>QR код отсутсвует</p>
+  {% endif %}
   <!-- Добавьте другие данные о пользователе здесь -->
 {% endblock %}

@@ -19,17 +19,28 @@ class AdminPanelHome(DataMixin, ListView):
     title_page = "Главная страница"
 
     def get_queryset(self):
-        return Users.objects.all()  
-
+        queryset = Users.objects.all()
+        search_query = self.request.GET.get("search")
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+        status_filter = self.request.GET.get("status")
+        if status_filter == "active":
+            queryset = queryset.filter(is_active=True)
+        elif status_filter == "inactive":
+            queryset = queryset.filter(is_active=False)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return self.get_mixin_context(context, title=self.title_page)
 
+
+
 class AddUser(DataMixin, CreateView):
     model = Users
     form_class = UserForm
     template_name = "admin_panel/add_user.html"
+    title_page = "Добавить Пользователя"
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -37,6 +48,10 @@ class AddUser(DataMixin, CreateView):
 
     def get_success_url(self):
         return reverse("user_info", kwargs={"user_slug": self.object.slug})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return self.get_mixin_context(context, title=self.title_page)
 
 
 class ShowUserInfo(DataMixin, DetailView):

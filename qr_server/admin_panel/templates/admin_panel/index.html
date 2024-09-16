@@ -1,9 +1,65 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Главная{% endblock %}
 
-{% block header %}Welcome to the Home Page{% endblock %}
+{% block header %}Список пользователей{% endblock %}
 
 {% block content %}
-<p>This is the home page content.</p>
+
+<!-- Форма поиска -->
+<form method="get" action="{% url 'home' %}">
+    <input type="text" name="search" placeholder="Поиск по имени..." value="{{ request.GET.search }}">
+    <button type="submit">Искать</button>
+</form>
+
+<!-- Фильтр по активным/неактивным пользователям -->
+<form method="get" action="{% url 'home' %}">
+    <label>
+        <input type="radio" name="status" value="all" {% if request.GET.status == "all" or not request.GET.status %}checked{% endif %}> Все
+    </label>
+    <label>
+        <input type="radio" name="status" value="active" {% if request.GET.status == "active" %}checked{% endif %}> Активные
+    </label>
+    <label>
+        <input type="radio" name="status" value="inactive" {% if request.GET.status == "inactive" %}checked{% endif %}> Неактивные
+    </label>
+    <button type="submit">Фильтровать</button>
+</form>
+
+<!-- Таблица с пользователями -->
+<table>
+    <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>QR код</th>
+            <th>Активен</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>
+                <a href="{% url 'user_info' user_slug=user.slug %}">
+                    {{ user.name }}
+                </a>
+            </td>
+            <td>
+                {% if user.qr_qode %}
+                    <img src="{{ user.qr_qode.url }}" alt="QR код" width="50" height="50">
+                {% else %}
+                    Нет QR-кода
+                {% endif %}
+            </td>
+            <td>
+                <input type="checkbox" disabled {% if user.is_active %}checked{% endif %}>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Пользователи не найдены</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}
