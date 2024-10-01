@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Список пользователей</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>QR Код</th>
+                <th>Сканирован</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.patronymic }}</td>  <!-- Замените на нужное поле для отчества -->
+                    <td>
+                        {% if user.qr_code %}
+                            <img src="{{ user.qr_code.url }}" alt="QR Код" style="width: 50px; height: 50px;">
+                        {% else %}
+                            Нет QR кода
+                        {% endif %}
+                    </td>
+                    <td>
+                        <input type="checkbox" disabled {% if user.is_scanned %}checked{% endif %}>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block navigation %}
+<p>Navigation</p>
+{% endblock navigation %}
